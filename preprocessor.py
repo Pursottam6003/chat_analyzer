@@ -4,6 +4,7 @@ import pandas as pd
 
 def preprocess(data):
     pattern = '\d{1,2}\/\d{1,2}\/\d{2},\s\d{1,2}:\d{2}\s(?:AM|PM)'
+    # split the messages by the help of patterns
     messages = re.split(pattern, data)[1:]
     dates = re.findall(pattern, data)
 
@@ -13,8 +14,10 @@ def preprocess(data):
         df['message_date'], format="%m/%d/%y, %I:%M %p")
 
     df.rename(columns={'message_date': 'date'}, inplace=True)
+    # replace redundent hyphens and spaces
     df['user_message'] = df['user_message'].replace('-', '', regex=True)
 
+    # store user name and messages seperately into a list first
     users = []
     messages = []
     for message in df['user_message']:
@@ -25,7 +28,7 @@ def preprocess(data):
         else:
             users.append('group_notification')
             messages.append(entry[0])
-
+    # create new columns to store new dataframes
     df['user'] = users
     df['message'] = messages
     df.drop(columns=['user_message'], inplace=True)
@@ -39,6 +42,7 @@ def preprocess(data):
     df['hour'] = df['date'].dt.hour
     df['minute'] = df['date'].dt.minute
 
+    # convert into a period that will help in proceeding with graphs
     period = []
     for hour in df[['day_name', 'hour']]['hour']:
         if hour == 23:

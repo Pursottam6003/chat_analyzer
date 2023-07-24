@@ -1,11 +1,13 @@
+# importing libraries and packages
 from urlextract import URLExtract
 import pandas as pd
 from collections import Counter
 from wordcloud import WordCloud
-
 import emoji
 
 extract = URLExtract()
+
+# function to fetch the statistics
 
 
 def fetch_stats(selected_user, df):
@@ -37,19 +39,8 @@ def most_busy_users(df):
         columns={'index': 'name', 'user': 'percent'})
     return x, df
 
+# function to create wordcloud
 
-# def create_wordcloud(selected_user, df):
-
-#     # f = open('stop_hinglish.txt', 'r')
-#     # stop_words = f.read()
-
-#     if selected_user != 'Overall':
-#         df = df[df['user'] == selected_user]
-
-#     wc = WordCloud(width=500, height=500, min_font_size=10,
-#                    background_color='white')
-#     df_wc = wc.generate(df['message'].str.cat(sep=" "))
-#     return df_wc
 
 def create_wordcloud(selected_user, df):
     f = open('stop_hinglish.txt', 'r')
@@ -60,6 +51,8 @@ def create_wordcloud(selected_user, df):
 
     temp = df[df['user'] != 'group_notification']
     temp = temp[temp['message'] != '<Media omitted>\n']
+    # since its  main jon to remove hindi-english words from the dataframe
+    # which makes it easy to read and analyze
 
     def remove_stop_words(message):
         y = []
@@ -74,15 +67,17 @@ def create_wordcloud(selected_user, df):
     df_wc = wc.generate(temp['message'].str.cat(sep=" "))
     return df_wc
 
+# function to find the most common words
+
 
 def most_common_words(selected_user, df):
 
     f = open('stop_hinglish.txt', 'r')
     stop_words = f.read()
-
+    # select the dataframe based on the selected user
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
-
+    # remove the media ommited keywords from the strings
     temp = df[df['user'] != 'group_notification']
     temp = temp[temp['message'] != '<Media omitted>\n']
 
@@ -95,6 +90,8 @@ def most_common_words(selected_user, df):
 
     most_common_df = pd.DataFrame(Counter(words).most_common(20))
     return most_common_df
+
+# function to find emojis properly
 
 
 def emoji_helper(selected_user, df):

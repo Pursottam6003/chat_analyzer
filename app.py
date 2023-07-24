@@ -1,11 +1,12 @@
+# imported essesntial libraries
 import streamlit as st
 import preprocessor
 import helpers
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
-st.sidebar.title("Whatsapp Chat Analyzer")
+# sidebar
+st.sidebar.title("Chat Analyzer Primary version")
 
 uploaded_file = st.sidebar.file_uploader("Choose a file")
 if uploaded_file is not None:
@@ -27,7 +28,7 @@ if uploaded_file is not None:
     selected_user = st.sidebar.selectbox("Show analysis wrt", user_list)
 
     if st.sidebar.button("Show analysis"):
-        # Stats Area
+        # Statistics Area starts
 
         num_messages, words, num_media_messages, num_links = helpers.fetch_stats(
             selected_user, df)
@@ -47,7 +48,7 @@ if uploaded_file is not None:
             st.header("Links Shared")
             st.title(num_links)
 
-        # finding the busiest users in the group(Group level)
+        # finding the most active users in the group(Group level)
         if selected_user == 'Overall':
             st.title('Most Busy Users')
             x, new_df = helpers.most_busy_users(df)
@@ -62,7 +63,7 @@ if uploaded_file is not None:
             with col2:
                 st.dataframe(new_df)
 
-         # WordCloud
+        # WordCloud provides the representation all the words with different font size
         st.title("Wordcloud")
         df_wc = helpers.create_wordcloud(selected_user, df)
         fig, ax = plt.subplots()
@@ -131,7 +132,7 @@ if uploaded_file is not None:
             ax.bar(busy_month.index, busy_month.values, color='orange')
             plt.xticks(rotation='vertical')
             st.pyplot(fig)
-
+        # heatmap of activity
         st.title("Weekly Activity Map")
         user_heatmap = helpers.activity_heatmap(selected_user, df)
         fig, ax = plt.subplots()
