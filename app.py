@@ -1,20 +1,20 @@
-# imported essesntial libraries
 import streamlit as st
+from streamlit_option_menu import option_menu
+import webbrowser
 import preprocessor
 import helpers
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# sidebar
-st.sidebar.title("Chat Analyzer Primary version")
 
-uploaded_file = st.sidebar.file_uploader("Choose a file")
-if uploaded_file is not None:
+# st.sidebar.title("Chat Analyzer Primary version")
+
+def uploadFile(uploaded_file):
     bytes_data = uploaded_file.getvalue()
     data = bytes_data.decode("utf-8")
     df = preprocessor.preprocess(data)
-    st.dataframe(df)
 
+    st.header('Great ! Now click on the "Show Analysis" button')
     # fetch unique users
     user_list = df['user'].unique().tolist()
 
@@ -138,3 +138,143 @@ if uploaded_file is not None:
         fig, ax = plt.subplots()
         ax = sns.heatmap(user_heatmap)
         st.pyplot(fig)
+
+
+def main():
+    # Set the page configuration and layout
+    st.set_page_config(
+        page_title="Chat Analyzer",
+        layout="wide",
+        initial_sidebar_state="auto",
+    )
+    # Create a sidebar with option_menu
+    logo_image = "./media/logos/logo1.png"
+    st.sidebar.image(logo_image,
+                     width=300)
+    padding_top = -30
+
+    with st.sidebar:
+        selected = option_menu("Chat Analysis", ["Home", "Get started", "Project Demo", "Generate Reports"], icons=[
+            'house', 'play-btn', 'github', 'graph-up-arrow'], menu_icon="cast", default_index=0)
+
+    st.title('Simple Chat Analysis')
+
+    # Add your logo on the top left in the sidebar
+
+    custom_css = ''' 
+    <style> 
+    div.custom-container { 
+        max-width: 800px;
+        height:250px;
+        font-size:14px;
+    } 
+
+    div.horizontal-buttons {
+        display: flex;
+        justify-content: center;
+    }
+    
+    </style> 
+    '''
+    st.markdown(f"""
+    <style>
+        
+        .reportview-container .main .block-container{{
+            padding-top: {padding_top}rem;
+        }}
+
+
+    </style>""", unsafe_allow_html=True,)
+
+    # The rest of your app content goes here
+
+    # Create a grid layout with 2 columns
+    col1, col2 = st.columns(2)
+
+    # Load your images (replace these paths with your actual image file paths)
+    image1 = "./media/background5.jpeg"
+    image2 = "./media/background6.png"
+
+    # Display images in the grid
+    col1.image(image1, use_column_width=True, width=200)
+    col2.image(image2, use_column_width=True, width=200)
+
+    st.markdown(custom_css, unsafe_allow_html=True)
+
+    # Add content inside the custom container
+    st.markdown('<div class="custom-container"> <h3>Generate interactive, beautiful and insightful chat analysis reports </h3> <p> <strong>Introducing ChatAnalyzer</strong>- your <em>ultimate</em> <strong>companion</strong> in unraveling the secrets of <em>online chating!</em> With its cutting-edge <strong>analytics</strong>, dive into a world of <em>thrilling insights</em>. Uncover the #1 analysis, <strong>decode</strong> the most popular <strong>emojis</strong> within the group, and witness the <em>staggering message flow</em> each day. ChatAnalyzer: <em>where curiosity meets data, and the extraordinary journey of communication exploration begins!</em> </p>Everything is <strong>processed</strong> in your browser.🔒 No data leaves your device.Can handle <strong>millions</strong> of messages and multiple chats. Free and <strong>open source</strong> ❤️ </div>', unsafe_allow_html=True)
+
+    st.markdown('<div > Supports: <img width="16" height="16" src="https://img.icons8.com/external-those-icons-flat-those-icons/24/external-WhatsApp-Logo-social-media-those-icons-flat-those-icons.png" alt="external-WhatsApp-Logo-social-media-those-icons-flat-those-icons"/> <img width="18" height="18" src="https://img.icons8.com/color/16/telegram-app--v1.png" alt="telegram-app--v1"/><img width="18" height="18" src="https://img.icons8.com/color/48/000000/discord--v2.png" alt="discord--v2"/>  <img width="18" height="18" src="https://img.icons8.com/color/48/facebook-messenger--v1.png" alt="facebook-messenger--v1"/></div>',
+                unsafe_allow_html=True)
+    # Close the custom container
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Check if the button is clicked
+    if selected == "Home":
+        pass
+    elif selected == "Get started":
+        get_started()
+
+    elif selected == "Project Demo":
+        generate_demo()
+    elif selected == "Generate Reports":
+        generate_report()
+
+    uploaded_file = st.file_uploader("Upload a file")
+
+    with st.sidebar:
+        selected = option_menu(None, ["Uploaded file analysis section"], icons=[
+            'graph-up-arrow'], menu_icon="cast", orientation="horizontal")
+        st.sidebar.markdown(
+            '<img width="30" height="30" src="https://img.icons8.com/ios-filled/50/github.png" alt="github"/> **Project Repository:**  [click here](https://github.com/Pursottam6003/chat_analyzer)   ', unsafe_allow_html=True)
+
+        st.sidebar.markdown(
+            'Designed and _Developed by **Pursottam Sah**_ [src](https://linkedin.com/in/pursottamsah)', unsafe_allow_html=True)
+    if uploaded_file:
+        st.write("File Uploaded Successfully!")
+        uploadFile(uploaded_file)
+
+
+def generate_report():
+    st.markdown(' 1. To generatea a report you should have a <kbd>.txt</kbd> file being exported via chat if not please click on <kbd>get started</kbd> button to learn more... ', unsafe_allow_html=True)
+    st.markdown(
+        '2. Click on the <kbd>browse file</kbd> option on the bottom of page and select the file.', unsafe_allow_html=True)
+    st.markdown(
+        '3. And then click <kbd>show analysis</kbd> button on the bottom of sidenav bar', unsafe_allow_html=True)
+    st.markdown('4. There is one <kbd>dropdown</kbd> to select single user analysis ',
+                unsafe_allow_html=True)
+
+
+def generate_demo():
+    # st.markdown('<img src="./media/demo.webm" alt="demo_video" />',
+    #             unsafe_allow_html=True)
+    st.markdown('<iframe width="560" height="315" src="https://www.youtube.com/embed/2bW4ZDqFVWc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>',
+                unsafe_allow_html=True)
+
+
+def get_started():
+    st.markdown(
+        '1. Go to **WhatsApp** in your mobile phone and select the **desired** group/person')
+    st.markdown(
+        '2. Press the context <kbd>**menu**</kbd> ( <img width="12" height="16" src="https://img.icons8.com/ios-filled/50/menu-2.png" alt="menu-2"/> ) in the top right corner', unsafe_allow_html=True)
+    st.markdown('3. In the context menu, select the <kbd>**"More"**</kbd> item',
+                unsafe_allow_html=True)
+    st.image('./media/tut1.png', width=250)
+
+    st.markdown('4. In the new menu, _choose_  <kbd>**"Export Chat"**</kbd>.',
+                unsafe_allow_html=True)
+    st.image('./media/tut2.jpeg', width=200)
+
+    st.markdown('5. You should get a _popup_ where you need to choose between exporting with or without media. Choose the <kbd>**"Without Media"**</kbd> option.', unsafe_allow_html=True)
+    st.image('./media/tut3.png', width=300)
+
+    st.markdown('6. **Email** the **exported text** file to yourself.',
+                unsafe_allow_html=True)
+    st.image('./media/tut4.png', width=300)
+
+    st.markdown(
+        '7. **Download** the file to your computer, and <kbd>**upload**</kbd> it to _ChatAnalyzer_ ', unsafe_allow_html=True)
+
+
+if __name__ == "__main__":
+    main()
